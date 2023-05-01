@@ -1,8 +1,10 @@
 import { Oswald } from "next/font/google";
 // Library imports
 import axios from "axios";
-
-// Local imports
+import { useState, useEffect } from "react";
+// Component imports
+import CitySearch from "@/components/CitySearch";
+// Lib imports
 import { changeBackground } from "@/libs/changeBackground";
 
 const oswald = Oswald({ subsets: ["latin"] });
@@ -10,64 +12,92 @@ const oswald = Oswald({ subsets: ["latin"] });
 // Declare a type for global props returned by getStaticProps
 type globalProps = {
   iconURL: string;
-  iconKey: 12;
-  temp: 12;
+  iconKey: number;
+  temp: number;
   weatherText: string;
 };
 
-export async function getStaticProps() {
-  const res = await axios.get(
-    `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${process.env.NEXT_PUBLIC_API_KEY}&q=Amsterdam`
-  );
-  const locKey = Number(res.data[0].Key);
+export default function Home() {
+  let [location, setLocation] = useState("Amsterdam");
+  let [showSpinner, setShowSpinner] = useState(false);
 
-  // Now we have that we have the location key we can make a specific call for the weather
-  const currentWeather = await axios.get(
-    `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${process.env.NEXT_PUBLIC_API_KEY}`
-  );
-  // If the icon key is less than 10, we add prefix a 0 to match the icon URL
-  let prefixNum = "";
-  const iconKey = Number(currentWeather.data[0].WeatherIcon);
-  if (iconKey < 10) {
-    prefixNum = "0";
+  const [pageProps, setPageProps] = useState<globalProps>({
+    iconURL: "",
+    iconKey: 12,
+    temp: 12,
+    weatherText: "",
+  });
+
+  async function getProps(location: string) {
+    await axios
+      .get(
+        `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${process.env.NEXT_PUBLIC_API_KEY}&q=${location}`
+      )
+      .catch((error) => {
+        console.log(error);
+      })
+      .then(async (res: any) => {
+        const locKey = Number(res.data[0].Key);
+
+        // Now we have that we have the location key we can make a specific call for the weather
+        const currentWeather = await axios.get(
+          `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${process.env.NEXT_PUBLIC_API_KEY}`
+        );
+        // If the icon key is less than 10, we add prefix a 0 to match the icon URL
+        let prefixNum = "";
+        const iconKey = Number(currentWeather.data[0].WeatherIcon);
+        if (iconKey < 10) {
+          prefixNum = "0";
+        }
+        //  Get the icon URL
+        const iconURL = `https://developer.accuweather.com/sites/default/files/${
+          prefixNum + iconKey
+        }-s.png`;
+
+        // Get the current weather forecast and the current temparature
+        const weatherText = currentWeather.data[0].WeatherText;
+        const temp = Math.round(
+          Number(currentWeather.data[0].Temperature.Metric.Value)
+        );
+        setShowSpinner(false);
+        setPageProps({
+          iconURL: iconURL,
+          iconKey: iconKey,
+          temp: temp,
+          weatherText: weatherText,
+        });
+      });
   }
-  //  Get the icon URL
-  const iconURL = `https://developer.accuweather.com/sites/default/files/${
-    prefixNum + iconKey
-  }-s.png`;
+  useEffect(() => {
+    getProps(location);
+  }, [location]);
 
-  // Get the current weather forecast and the current temparature
-  const weatherText = currentWeather.data[0].WeatherText;
-  const temp = Math.round(
-    Number(currentWeather.data[0].Temperature.Metric.Value)
-  );
-
-  return {
-    props: {
-      iconURL,
-      iconKey,
-      temp,
-      weatherText,
-    },
+  const searchForLoc = (value: string) => {
+    setLocation(value);
   };
-}
 
-export default function Home(props: globalProps) {
+  const displaySpinner = () => {
+    setShowSpinner(true);
+  };
+
   return (
     <main>
-      <div className={"app " + changeBackground(props.iconKey, props.temp)}>
-        {}
+      <div
+        className={"app " + changeBackground(pageProps.iconKey, pageProps.temp)}
+      >
+        {showSpinner ? <div className="lds-dual-ring"> </div> : ""}
+        <CitySearch callBack={searchForLoc} callBackSpinner={displaySpinner} />
         <p className={"temp"}>
-          {props.temp}
+          {pageProps.temp}
           <span className="degree">{"\u00B0"}</span>
         </p>
         <img
           className="weather-icon"
-          src={props.iconURL}
+          src={pageProps.iconURL}
           alt="weather-icon"
         ></img>
-        <h1 className={oswald.className}>Amsterdam</h1>
-        <p className={"summary " + oswald.className}>{props.weatherText}</p>
+        <h1 className={oswald.className}>{location}</h1>
+        <p className={"summary " + oswald.className}>{pageProps.weatherText}</p>
         <img className="img-background" src="/weather-bg.png"></img>
       </div>
     </main>
