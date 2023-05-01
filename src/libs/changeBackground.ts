@@ -11,6 +11,8 @@ export const changeBackground = (iconKey: number, temp: number) => {
     cssClass = "bg-mild";
   } else if (iconKey < 14) {
     cssClass = "bg-cloudy";
+  } else if (iconKey > 31) {
+    cssClass = "bg-night";
   }
   return cssClass;
 };

@@ -43,6 +43,7 @@ export default function Home() {
         const currentWeather = await axios.get(
           `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${process.env.NEXT_PUBLIC_API_KEY}`
         );
+        console.log(currentWeather);
         // If the icon key is less than 10, we add prefix a 0 to match the icon URL
         let prefixNum = "";
         const iconKey = Number(currentWeather.data[0].WeatherIcon);
@@ -73,7 +74,9 @@ export default function Home() {
   }, [location]);
 
   const searchForLoc = (value: string) => {
-    setLocation(value);
+    if (value) {
+      setLocation(value);
+    }
   };
 
   const displaySpinner = () => {

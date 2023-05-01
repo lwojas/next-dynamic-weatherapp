@@ -1,0 +1,46 @@
+.bg-sunny {
+  background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgba(232, 217, 85, 1) 0%,
+    rgba(255, 0, 0, 1) 100%
+  );
+}
+
+.bg-mild {
+  background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgb(246, 244, 233) 0%,
+    rgb(122, 174, 207) 100%
+  );
+}
+
+.bg-cloudy {
+  background: rgb(241, 241, 241);
+  background: linear-gradient(
+    0deg,
+    rgba(241, 241, 241, 1) 0%,
+    rgba(110, 110, 110, 1) 100%
+  );
+}
+
+.bg-fair {
+  background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgb(246, 244, 233) 0%,
+    rgb(122, 174, 207) 40%,
+    rgb(72, 164, 255) 100%
+  );
+}
+
+.bg-night {
+  background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgb(109, 106, 90) 0%,
+    rgb(53, 98, 126) 40%,
+    rgb(11, 40, 69) 100%
+  );
+}
