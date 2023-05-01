@@ -4,7 +4,7 @@ This app shows the current weather in a pleasing single page UI.
 
 ## Libraries / API's
 
-- **Next.js** 
+- ** React / Next.js** 
 - **Typescript**
 - **Axios**  
 - **Accuweather api**
