@@ -7,16 +7,16 @@
   );
 }
 
-.bg-mild {
+/* .bg-mild {
   background: rgb(232, 217, 85);
   background: linear-gradient(
     0deg,
     rgb(246, 244, 233) 0%,
     rgb(122, 174, 207) 100%
   );
-}
+} */
 
-.bg-cloudy {
+/* .bg-cloudy {
   background: rgb(241, 241, 241);
   background: linear-gradient(
     0deg,
@@ -37,6 +37,62 @@
 
 .bg-night {
   background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgb(109, 106, 90) 0%,
+    rgb(53, 98, 126) 40%,
+    rgb(11, 40, 69) 100%
+  );
+} */
+
+._1,
+._2,
+._3,
+._4 {
+  background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgb(246, 244, 233) 0%,
+    rgb(122, 174, 207) 40%,
+    rgb(72, 164, 255) 100%
+  );
+}
+
+._5,
+._6 {
+  background: rgb(232, 217, 85);
+  background: linear-gradient(
+    0deg,
+    rgb(246, 244, 233) 0%,
+    rgb(122, 174, 207) 100%
+  );
+}
+
+._7,
+._8,
+._11 {
+  background: rgb(241, 241, 241);
+  background: linear-gradient(
+    0deg,
+    rgba(241, 241, 241, 1) 0%,
+    rgba(110, 110, 110, 1) 100%
+  );
+}
+
+._32,
+._33,
+._34,
+._35,
+._36,
+._37,
+._38,
+._39,
+._40,
+._41,
+._42,
+._43,
+._44 {
+  background: rgb(49, 55, 81);
   background: linear-gradient(
     0deg,
     rgb(109, 106, 90) 0%,
