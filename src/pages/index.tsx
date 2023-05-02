@@ -29,44 +29,49 @@ export default function Home() {
   });
 
   async function getProps(location: string) {
-    await axios
+    axios
       .get(
         `http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${process.env.NEXT_PUBLIC_API_KEY}&q=${location}`
       )
-      .catch((error) => {
-        console.log(error);
-      })
       .then(async (res: any) => {
-        const locKey = Number(res.data[0].Key);
+        // Accuweather API will respond with a success even if the data is empty
+        if (res.data.length > 0) {
+          console.log(res);
+          const locKey = Number(res.data[0].Key);
 
-        // Now we have that we have the location key we can make a specific call for the weather
-        const currentWeather = await axios.get(
-          `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${process.env.NEXT_PUBLIC_API_KEY}`
-        );
-        console.log(currentWeather);
-        // If the icon key is less than 10, we add prefix a 0 to match the icon URL
-        let prefixNum = "";
-        const iconKey = Number(currentWeather.data[0].WeatherIcon);
-        if (iconKey < 10) {
-          prefixNum = "0";
+          // Now we have that we have the location key we can make a specific call for the weather
+          const currentWeather = await axios.get(
+            `http://dataservice.accuweather.com/currentconditions/v1/${locKey}?apikey=${process.env.NEXT_PUBLIC_API_KEY}`
+          );
+          console.log(currentWeather);
+          // If the icon key is less than 10, we add prefix a 0 to match the icon URL
+          let prefixNum = "";
+          const iconKey = Number(currentWeather.data[0].WeatherIcon);
+          if (iconKey < 10) {
+            prefixNum = "0";
+          }
+          //  Get the icon URL
+          const iconURL = `https://developer.accuweather.com/sites/default/files/${
+            prefixNum + iconKey
+          }-s.png`;
+
+          // Get the current weather forecast and the current temparature
+          const weatherText = currentWeather.data[0].WeatherText;
+          const temp = Math.round(
+            Number(currentWeather.data[0].Temperature.Metric.Value)
+          );
+          setShowSpinner(false);
+          setPageProps({
+            iconURL: iconURL,
+            iconKey: iconKey,
+            temp: temp,
+            weatherText: weatherText,
+          });
         }
-        //  Get the icon URL
-        const iconURL = `https://developer.accuweather.com/sites/default/files/${
-          prefixNum + iconKey
-        }-s.png`;
-
-        // Get the current weather forecast and the current temparature
-        const weatherText = currentWeather.data[0].WeatherText;
-        const temp = Math.round(
-          Number(currentWeather.data[0].Temperature.Metric.Value)
-        );
-        setShowSpinner(false);
-        setPageProps({
-          iconURL: iconURL,
-          iconKey: iconKey,
-          temp: temp,
-          weatherText: weatherText,
-        });
+      })
+      .catch((error) => {
+        console.log(error.message);
+        // throw error;
       });
   }
   useEffect(() => {
@@ -74,6 +79,7 @@ export default function Home() {
   }, [location]);
 
   const searchForLoc = (value: string) => {
+    // Stop empty requests
     if (value) {
       setLocation(value);
     }
